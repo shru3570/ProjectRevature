@@ -1,0 +1,90 @@
+﻿@model IEnumerable<ProjectDemo.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+    string role = ViewBag.role;
+}
+<head>
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+</head>
+
+
+
+@using (Html.BeginForm("Logout", "Products", FormMethod.Post, new { id = "logoutForm" }))
+{
+    @Html.AntiForgeryToken()
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Welcome : @Session["UserName"]</a></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">LogOut</a></li>
+    </ul>
+}
+<br><br>
+<h2 style="background-color:darkgrey ;text-align:center">Welcome to the Product Page</h2>
+
+<p>
+    <div>
+        @Html.ActionLink("Add Product", "Create", null, new { @class = "btn btn-primary" })
+        <div style="float:right;width:40%">
+            @Html.ActionLink("View All Users", "Index", "Users", null, new { @class = "btn btn-primary" })
+            @Html.ActionLink("ImportProducts", "Index", "Excel", null, new { @class = "btn btn-primary" })
+        </div>
+    </div>
+
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductQuantity)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductQuantity)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }, new { @class = "btn btn-success btnStyle" })
+                @Html.ActionLink("Details", "Details", new { id = item.ProductId }, new { @class = "btn btn-primary btnStyle" })
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductId }, new { @class = "btn btn-danger btnStyle" })
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+
+
+@*<div>
+        @Html.ActionLink("View All Users", "Index", "Users", null, new { @class = "btn btn-primary" })
+    </div>
+    <div>
+        @Html.ActionLink("ImportFromExcel", "Index", "Excel", null, new { @class = "btn btn-primary" })
+    </div>*@
+@*@if (role == "Admin")
+    {
+        @Html.ActionLink("View all User", "Index", "Users")
+    }*@
+@*@using (Html.BeginForm("Logout", "Products", FormMethod.Post, new { id = "logoutForm" }))
+{
+    @Html.AntiForgeryToken()
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Welcome : @Session["UserName"]</a></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">LogOut</a></li>
+    </ul>
+}*@

@@ -1,0 +1,123 @@
+﻿@model ProjectDemo.Models.Product
+
+@{
+    ViewBag.Title = "Details";
+}
+<head>
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+</head>
+@*<h2 style="background-color:darkgrey ;">Details Of Product</h2>*@
+
+@*<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProductAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductQuantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProductQuantity)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ProductId }) |
+    @Html.ActionLink("Back to List", "MultipleDelete", null, new { @class = "btn btn-primary" })
+</p>*@
+
+
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Details Of Product</h4>
+            </div>
+            <div class="modal-body">
+                @*<p>*@
+                @Html.HiddenFor(x => x.ProductId);
+                <div>
+                    @*<h4>Product</h4>*@
+                    
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductName)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductName)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductAmount)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductAmount)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductQuantity)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductQuantity)
+                        </dd>
+
+                    </dl>
+                </div>
+                <p>
+                    @*@Html.ActionLink("Edit", "Edit", new { id = Model.ProductId }) |*@
+                    @Html.ActionLink("Back to List", "MultipleDelete", null, new { @class = "btn btn-primary" })
+                    
+                </p>
+                @*</p>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="addcart" class="btn btn-default">Add To Cart</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+<script>
+    $('#addcart').click(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: "/Order/AddtoCart",
+            data: { id: $('#ProductId').val() },
+            /*dataType: "json",*/
+            /*contentType: 'application/json; charset=utf-8',*/
+            success: function (data) {
+                debugger
+                /*$("#DetailModal").html(data).modal('show')*/
+
+            },
+            error: function () {
+                alert("Error occured!!")
+            }
+        })
+    }
+    )
+
+</script>

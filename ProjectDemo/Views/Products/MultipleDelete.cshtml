@@ -1,0 +1,257 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    @Styles.Render("~/Content/fontawesome")
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <link href="~/Content/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <script src="~/scripts/jquery.dataTables.min.js"></script>
+
+    <script src="~/scripts/dataTables.bootstrap4.min.js"></script>
+
+</head>
+<body>
+
+    <div class="container py-4">
+        @using (Html.BeginForm("Logout", "Products", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Welcome : @Session["UserName"]</a></li>
+                <li><a href="javascript:document.getElementById('logoutForm').submit()">LogOut</a></li>
+            </ul>
+        }
+        <br><br>
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 style="text-align:center; background-color:darkblue">Product List</h3>
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("MultipleDelete", "Products", FormMethod.Post))
+                {
+                    <div>
+                        <button type="submit" value="Delete" class="btn btn-sm btn-danger rounded-0" onclick="return confirm('Are you sure?')"><i class="fa fa-trash-o"></i> Delete</button>
+                        <div style="float:right;width:20%">
+                            @Html.ActionLink("Add Product", "Create", null, new { @class = "btn btn-success rounded-0" })
+                            @*@Html.ActionLink("View All Users", "Index", "Users", null, new { @class = "btn btn-primary" })*@
+                            @*@Html.ActionLink("ImportProducts", "Index", "Excel", null, new { @class = "btn btn-primary" })*@
+                            <button type="button" id="importexcel" class="btn btn-success rounded-0" data-toggle="modal" data-target="MyModal">Import Product</button>
+
+
+                        </div>
+
+                    </div>
+
+                    <br /><br />
+
+                    <table id="DataTable" style="width:100%;" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkBoxAll" class="custom-checkbox" /></th>
+
+                                <th>ProductName</th>
+                                <th>ProductAmount</th>
+                                <th>ProductQuantity</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in ViewBag.ListProduct)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="ID" value="@product.ProductId" class="custom-checkbox chkCheckBoxId" /></td>
+
+                                    <td>@product.ProductName</td>
+                                    <td>@product.ProductAmount</td>
+                                    <td>@product.ProductQuantity</td>
+
+                                    <td>
+                                        <button type="button" id="edituser" class="btn btn-primary" data-toggle="modal" data-target="EditModal" onclick="EditProduct( @product.ProductId)"><i class="fa fa-pencil-square-o"></i></button>
+                                        <button type="button" id="detailsproduct" class="btn btn-secondary" data-toggle="modal" data-target="DetailModal" onclick="DetailsProduct( @product.ProductId)"><i class="fa fa-list-ol"></i></button>
+                                        <button type="button" id="deleteproduct" class="btn btn-danger" data-toggle="modal" data-target="DeleteModal" onclick="DeleteProduct( @product.ProductId)"><i class="fa fa-trash-o"></i></button>
+                                        @*<a href="@Url.Action("Edit","Products",new { id = product.ProductId })" class="btn btn-success btnStyle" style="text-decoration:none;"><i class="fa fa-pencil-square-o"></i></a>*@
+                                        @*<a href="@Url.Action("Details","Products",new { id = product.ProductId })" class="btn btn-secondary btnStyle" style="text-decoration:none;"><i class=" fa fa-list-ol"></i></a>*@
+                                        @*<a href="@Url.Action("Delete","Products",new { id = product.ProductId })" class="btn btn-danger btnStyle" style="text-decoration:none;"><i class="fa fa-trash-o"></i></a>*@
+
+                                        @*@Html.ActionLink("Edit", "Edit", new { id = product.ProductId }, new { @class = "btn btn-success btnStyle" })*@
+                                        @*@Html.ActionLink("Details", "Details", new { id = product.ProductId }, new { @class = "btn btn-primary btnStyle" })
+                                         @Html.ActionLi  ("Delete", "Delete", new { id = product.ProductId }, new { @class = "btn btn-danger btnStyle" })*@
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+    <div id="MyModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Import Products</h4>
+                </div>
+                <div class="modal-body">
+                    @*<p>*@
+                    @using (Html.BeginForm("Import", "Excel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.Raw(ViewBag.Error)
+                        <span>Excel File</span><input type="file" name="excelfile" />
+                        <br />
+                        <input type="submit" value="import" />
+
+                    }
+
+                    @*</p>*@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="EditModal" class="modal fade" role="dialog"></div>
+    <div id="DetailModal" class="modal fade" role="dialog"></div>
+    <div id="DeleteModal" class="modal fade" role="dialog"></div>
+</body>
+</html>
+<script>
+    var ProductId = 0;
+    $(document).ready(function () {
+        debugger
+        $('#MyModal').modal('hide');
+        $("#importexcel").click(function () {
+            $('#MyModal').modal('show');
+            //$.ajax({
+            //    type: "GET",
+            //    url: "/Excel/Index",
+            //    /*data: JSON.stringify(Student),*/
+            //    dataType: "json",
+            //    contentType: 'application/json; charset=utf-8',
+            //    success: function (data) {
+            //        debugger
+            //        alert(data.msg);
+            //    },
+            //    error: function () {
+            //        alert("Error occured!!")
+            //    }
+        });
+
+
+
+        $("#checkBoxAll").click(function () {
+            if ($(this).is(":checked")) {
+                $(".chkCheckBoxId").prop("checked", true)
+            }
+            else {
+                $(".chkCheckBoxId").prop("checked", false)
+            }
+        });
+        
+
+        $('#DataTable').DataTable();
+    });
+    function EditProduct(Id) {
+        $.ajax({
+            type: "GET",
+            url: "/Products/Edit",
+            data: {id:Id},
+            /*dataType: "json",*/
+            /*contentType: 'application/json; charset=utf-8',*/
+            success: function (data) {
+                debugger
+                $("#EditModal").html(data).modal('show')
+                
+            },
+            error: function () {
+                alert("Error occured!!")
+            }
+        })
+    }
+    function DetailsProduct(Id) {
+        ProductId = Id;
+        $.ajax({
+            type: "GET",
+            url: "/Products/Details",
+            data: { id: Id },
+            /*dataType: "json",*/
+            /*contentType: 'application/json; charset=utf-8',*/
+            success: function (data) {
+                debugger
+                $("#DetailModal").html(data).modal('show')
+
+            },
+            error: function () {
+                alert("Error occured!!")
+            }
+        })
+    }
+    function DeleteProduct(Id) {
+        $.ajax({
+            type: "GET",
+            url: "/Products/Delete",
+            data: { id: Id },
+            /*dataType: "json",*/
+            /*contentType: 'application/json; charset=utf-8',*/
+            success: function (data) {
+                debugger
+                $("#DeleteModal").html(data).modal('show')
+
+            },
+            error: function () {
+                alert("Error occured!!")
+            }
+        })
+    }
+    $('#addcart').click(function () {
+        debugger
+        $.ajax({
+            type: "GET",
+            url: "/Order/AddtoCart",
+            data: { id: ProductId },
+            /*dataType: "json",*/
+            /*contentType: 'application/json; charset=utf-8',*/
+            success: function (data) {
+                debugger
+                /*$("#DetailModal").html(data).modal('show')*/
+
+            },
+            error: function () {
+                alert("Error occured!!")
+            }
+        })
+    }
+        )
+</script>
+@*<div class="line-btn" >
+    <input type="submit" value="print" onclick="PrintOnlyTable()" class="btn fl btn-outline-primary">
+</div>
+<script>
+    function PrintOnlyTable() {
+        var HTML = $("html");
+        var cln = document.documentElement.innerHTML;
+        HTML.html($("table"));
+        window.print();
+        document.documentElement.innerHTML = cln;
+        return false;
+    }
+</script>*@
